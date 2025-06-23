@@ -1,24 +1,118 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>greenpay-eco-rewards</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenPay - Eco Rewards Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 GreenPay</h1>
+            <p>Earn rewards for eco-friendly purchases</p>
+            <div class="points-display">
+                <span>Your Points: <strong id="user-points">0</strong></span>
+            </div>
+        </header>
 
-    <meta property="og:title" content="greenpay-eco-rewards" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        <main>
+            <!-- Purchase Type Selection -->
+            <section class="purchase-type">
+                <h2>Choose Purchase Type</h2>
+                <div class="type-buttons">
+                    <button id="trusted-partner-btn" class="type-btn active">
+                        🏪 Trusted Partner
+                    </button>
+                    <button id="open-purchase-btn" class="type-btn">
+                        📸 Open Purchase
+                    </button>
+                </div>
+            </section>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+            <!-- Trusted Partner Form -->
+            <section id="trusted-partner-form" class="form-section">
+                <h3>Trusted Partner Purchase</h3>
+                <div class="form-group">
+                    <label for="partner-select">Select Partner Shop:</label>
+                    <select id="partner-select">
+                        <option value="">Choose a partner...</option>
+                        <option value="EcoMart">EcoMart - Organic Products</option>
+                        <option value="GreenStore">GreenStore - Bamboo Items</option>
+                        <option value="NaturalLife">NaturalLife - Recycled Goods</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="partner-amount">Amount (₹):</label>
+                    <input type="number" id="partner-amount" min="1" placeholder="Enter amount">
+                </div>
+                <div class="form-group">
+                    <label for="partner-image">Product Photo (Optional):</label>
+                    <input type="file" id="partner-image" accept="image/*">
+                </div>
+                <button id="partner-pay-btn" class="pay-btn">Pay with UPI</button>
+            </section>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+            <!-- Open Purchase Form -->
+            <section id="open-purchase-form" class="form-section hidden">
+                <h3>Open Purchase Verification</h3>
+                <div class="form-group">
+                    <label for="bill-image">Upload Bill or Product Photo:</label>
+                    <input type="file" id="bill-image" accept="image/*" required>
+                </div>
+                <button id="analyze-btn" class="analyze-btn">Analyze for Eco-Friendliness</button>
+                
+                <div id="analysis-result" class="analysis-result hidden">
+                    <h4>Analysis Result:</h4>
+                    <div id="eco-score"></div>
+                    <div id="detected-text"></div>
+                    
+                    <div class="form-group">
+                        <label for="open-amount">Amount (₹):</label>
+                        <input type="number" id="open-amount" min="1" placeholder="Enter amount">
+                    </div>
+                    <button id="open-pay-btn" class="pay-btn">Pay with UPI (Pending Verification)</button>
+                </div>
+            </section>
+
+            <!-- Transaction History -->
+            <section class="transaction-history">
+                <h3>Your Transactions</h3>
+                <div id="transactions-list" class="transactions-list">
+                    <p>No transactions yet</p>
+                </div>
+            </section>
+
+            <!-- Crowd Verification Status -->
+            <section class="verification-status">
+                <h3>Verification Status</h3>
+                <div id="verification-list" class="verification-list">
+                    <p>No pending verifications</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>UPI Payment</h3>
+            <div class="payment-details">
+                <p>Amount: ₹<span id="payment-amount"></span></p>
+                <p>Merchant: GreenPay Eco Rewards</p>
+                <div class="qr-placeholder">
+                    <p>📱 QR Code for UPI Payment</p>
+                    <p>(In real app, this would be PhonePe QR)</p>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="payment-success-btn" class="success-btn">Simulate Payment Success</button>
+                <button id="payment-cancel-btn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
