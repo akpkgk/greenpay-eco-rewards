@@ -1,0 +1,85 @@
+
+.steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.step {
+    text-align: center;
+    padding: 2rem 1rem;
+    position: relative;
+}
+
+.step-number {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.step-icon {
+    font-size: 3rem;
+    margin: 1rem 0;
+}
+
+.step h3 {
+    color: #2d5a27;
+    margin-bottom: 1rem;
+}
+
+.verification-info {
+    margin-top: 3rem;
+}
+
+.verification-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.verification-card {
+    background: #f9f9f9;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.verification-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-top: 1rem;
+    display: inline-block;
+}
+
+.verification-badge.trusted {
+    background: #d4edda;
+    color: #155724;
+}
+
+.verification-badge.community {
+    background: #fff3cd;
+    color: #856404;
+}
+
+@media (max-width: 768px) {
+    .steps-container {
+        grid-template-columns: 1fr;
+    }
+
+    .verification-cards {
+        grid-template-columns: 1fr;
+    }
+}

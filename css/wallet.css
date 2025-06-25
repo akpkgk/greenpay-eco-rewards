@@ -1,0 +1,95 @@
+
+.wallet-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.wallet-card {
+    background: #f9f9f9;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.wallet-points {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4CAF50;
+    margin-top: 1rem;
+}
+
+.wallet-points.pending {
+    color: #FF9800;
+}
+
+.wallet-points.redeemed {
+    color: #666;
+}
+
+.wallet-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.wallet-btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.wallet-btn:not(.secondary) {
+    background: #4CAF50;
+    color: white;
+}
+
+.wallet-btn.secondary {
+    background: transparent;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+}
+
+.recent-transactions {
+    margin-top: 2rem;
+}
+
+.wallet-transactions-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.transaction-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border-left: 4px solid #4CAF50;
+}
+
+.transaction-item.pending {
+    border-left-color: #FF9800;
+}
+
+.transaction-item.verified {
+    border-left-color: #4CAF50;
+}
+
+@media (max-width: 768px) {
+    .wallet-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .wallet-actions {
+        flex-direction: column;
+    }
+
+    .wallet-card {
+        padding: 1.5rem;
+    }
+}

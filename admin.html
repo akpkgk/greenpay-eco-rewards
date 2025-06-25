@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - GreenPay</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">🌱 GreenPay</div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="partners.html" class="nav-link">Partners</a>
+                <a href="how-it-works.html" class="nav-link">How it Works</a>
+                <a href="wallet.html" class="nav-link">My Wallet</a>
+                <a href="admin.html" class="nav-link">Admin</a>
+                <div id="auth-buttons">
+                    <button id="login-btn" class="auth-btn">Login</button>
+                    <button id="signup-btn" class="auth-btn">Sign Up</button>
+                </div>
+                <div id="user-menu" class="user-menu hidden">
+                    <span id="user-name">User</span>
+                    <button id="logout-btn" class="logout-btn">Logout</button>
+                </div>
+            </div>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="admin-access-denied" class="section-content">
+            <h2>Access Denied</h2>
+            <p>Admin access required. Please login with admin credentials.</p>
+            <button id="admin-login-btn" class="cta-btn">Login as Admin</button>
+        </div>
+
+        <div id="admin-content" class="section-content hidden">
+            <h2>Admin Dashboard</h2>
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <div class="stat-number" id="admin-total-users">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Verifications</h3>
+                    <div class="stat-number" id="admin-pending-verifications">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Transactions</h3>
+                    <div class="stat-number" id="admin-total-transactions">0</div>
+                </div>
+            </div>
+            
+            <div class="admin-section">
+                <h3>Pending Verifications</h3>
+                <div id="admin-verification-list" class="admin-verification-list">
+                    <p>No pending verifications</p>
+                </div>
+            </div>
+            
+            <div class="admin-section">
+                <h3>All Transactions</h3>
+                <div id="admin-transactions-list" class="admin-transactions-list">
+                    <p>No transactions yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

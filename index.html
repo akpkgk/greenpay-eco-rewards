@@ -5,17 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GreenPay - Eco Rewards Platform</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">🌱 GreenPay</div>
             <div class="nav-menu">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#partners" class="nav-link">Partners</a>
-                <a href="#how-it-works" class="nav-link">How it Works</a>
-                <a href="#wallet" class="nav-link">My Wallet</a>
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="partners.html" class="nav-link">Partners</a>
+                <a href="how-it-works.html" class="nav-link">How it Works</a>
+                <a href="wallet.html" class="nav-link">My Wallet</a>
                 <div id="auth-buttons">
                     <button id="login-btn" class="auth-btn">Login</button>
                     <button id="signup-btn" class="auth-btn">Sign Up</button>
@@ -34,264 +35,90 @@
     </nav>
 
     <div class="container">
-        <!-- Home Section -->
-        <section id="home" class="section active">
-            <header class="hero">
-                <h1>🌱 GreenPay</h1>
-                <p>Earn rewards for eco-friendly purchases</p>
-                <div class="points-display">
-                    <span>Your Points: <strong id="user-points">0</strong></span>
-                </div>
-                <button id="get-started-btn" class="cta-btn">Get Started</button>
-            </header>
-
-            <main id="main-app" class="hidden">
-                <!-- Purchase Type Selection -->
-                <section class="purchase-type">
-                    <h2>Choose Purchase Type</h2>
-                    <div class="type-buttons">
-                        <button id="trusted-partner-btn" class="type-btn active">
-                            🏪 Trusted Partner
-                        </button>
-                        <button id="open-purchase-btn" class="type-btn">
-                            📸 Open Purchase
-                        </button>
-                    </div>
-                </section>
-
-                <!-- Trusted Partner Form -->
-                <section id="trusted-partner-form" class="form-section">
-                    <h3>Trusted Partner Purchase</h3>
-                    <div class="form-group">
-                        <label for="partner-select">Select Partner Shop:</label>
-                        <select id="partner-select">
-                            <option value="">Choose a partner...</option>
-                            <option value="EcoMart">EcoMart - Organic Products</option>
-                            <option value="GreenStore">GreenStore - Bamboo Items</option>
-                            <option value="NaturalLife">NaturalLife - Recycled Goods</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="partner-amount">Amount (₹):</label>
-                        <input type="number" id="partner-amount" min="1" placeholder="Enter amount">
-                    </div>
-                    <div class="form-group">
-                        <label for="partner-image">Product Photo (Optional):</label>
-                        <input type="file" id="partner-image" accept="image/*">
-                    </div>
-                    <button id="partner-pay-btn" class="pay-btn">Pay with UPI</button>
-                </section>
-
-                <!-- Open Purchase Form -->
-                <section id="open-purchase-form" class="form-section hidden">
-                    <h3>Open Purchase Verification</h3>
-                    <div class="form-group">
-                        <label for="bill-image">Upload Bill or Product Photo:</label>
-                        <input type="file" id="bill-image" accept="image/*" required>
-                    </div>
-                    <button id="analyze-btn" class="analyze-btn">Analyze for Eco-Friendliness</button>
-                    
-                    <div id="analysis-result" class="analysis-result hidden">
-                        <h4>Analysis Result:</h4>
-                        <div id="eco-score"></div>
-                        <div id="detected-text"></div>
-                        
-                        <div class="form-group">
-                            <label for="open-amount">Amount (₹):</label>
-                            <input type="number" id="open-amount" min="1" placeholder="Enter amount">
-                        </div>
-                        <button id="open-pay-btn" class="pay-btn">Pay with UPI (Pending Verification)</button>
-                    </div>
-                </section>
-
-                <!-- Transaction History -->
-                <section class="transaction-history">
-                    <h3>Your Transactions</h3>
-                    <div id="transactions-list" class="transactions-list">
-                        <p>No transactions yet</p>
-                    </div>
-                </section>
-
-                <!-- Crowd Verification Status -->
-                <section class="verification-status">
-                    <h3>Verification Status</h3>
-                    <div id="verification-list" class="verification-list">
-                        <p>No pending verifications</p>
-                    </div>
-                </section>
-            </main>
-        </section>
-
-        <!-- Partners Section -->
-        <section id="partners" class="section">
-            <div class="section-content">
-                <h2>Our Trusted Partners</h2>
-                <p class="section-subtitle">Shop at these verified eco-friendly stores and earn instant rewards!</p>
-                
-                <div class="partners-grid">
-                    <div class="partner-card">
-                        <div class="partner-icon">🌿</div>
-                        <h3>EcoMart</h3>
-                        <p>Organic Products & Natural Foods</p>
-                        <div class="partner-benefits">
-                            <span class="benefit">10% Eco-Points</span>
-                            <span class="benefit">Instant Verification</span>
-                        </div>
-                        <div class="partner-location">📍 Green Avenue, City Center</div>
-                    </div>
-                    
-                    <div class="partner-card">
-                        <div class="partner-icon">🎋</div>
-                        <h3>GreenStore</h3>
-                        <p>Bamboo Products & Sustainable Items</p>
-                        <div class="partner-benefits">
-                            <span class="benefit">12% Eco-Points</span>
-                            <span class="benefit">Instant Verification</span>
-                        </div>
-                        <div class="partner-location">📍 Eco Plaza, Downtown</div>
-                    </div>
-                    
-                    <div class="partner-card">
-                        <div class="partner-icon">♻️</div>
-                        <h3>NaturalLife</h3>
-                        <p>Recycled Goods & Zero Waste Products</p>
-                        <div class="partner-benefits">
-                            <span class="benefit">15% Eco-Points</span>
-                            <span class="benefit">Instant Verification</span>
-                        </div>
-                        <div class="partner-location">📍 Sustainable Street, Uptown</div>
-                    </div>
-                </div>
-                
-                <div class="become-partner">
-                    <h3>Want to become a partner?</h3>
-                    <p>Join our network of eco-friendly merchants and attract conscious consumers</p>
-                    <button class="cta-btn">Apply for Partnership</button>
-                </div>
+        <header class="hero">
+            <h1>🌱 GreenPay</h1>
+            <p>Earn rewards for eco-friendly purchases</p>
+            <div class="points-display">
+                <span>Your Points: <strong id="user-points">0</strong></span>
             </div>
-        </section>
+            <button id="get-started-btn" class="cta-btn">Get Started</button>
+        </header>
 
-        <!-- How It Works Section -->
-        <section id="how-it-works" class="section">
-            <div class="section-content">
-                <h2>How GreenPay Works</h2>
-                <p class="section-subtitle">Simple steps to earn rewards for your eco-friendly purchases</p>
-                
-                <div class="steps-container">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div class="step-icon">🛍️</div>
-                        <h3>Shop Eco-Friendly</h3>
-                        <p>Purchase sustainable products from our trusted partners or any eco-friendly store</p>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-icon">📱</div>
-                        <h3>Pay with UPI</h3>
-                        <p>Use your preferred UPI app to complete the payment securely</p>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div class="step-icon">✅</div>
-                        <h3>Get Verified</h3>
-                        <p>Trusted partners give instant points. Other purchases are crowd-verified by community</p>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <div class="step-icon">🎁</div>
-                        <h3>Earn Rewards</h3>
-                        <p>Redeem your eco-points for discounts, coupons, and exclusive offers</p>
-                    </div>
+        <main id="main-app" class="hidden">
+            <!-- Purchase Type Selection -->
+            <section class="purchase-type">
+                <h2>Choose Purchase Type</h2>
+                <div class="type-buttons">
+                    <button id="trusted-partner-btn" class="type-btn active">
+                        🏪 Trusted Partner
+                    </button>
+                    <button id="open-purchase-btn" class="type-btn">
+                        📸 Open Purchase
+                    </button>
                 </div>
-                
-                <div class="verification-info">
-                    <h3>Community Verification</h3>
-                    <div class="verification-cards">
-                        <div class="verification-card">
-                            <h4>Trusted Partners</h4>
-                            <p>Pre-verified eco-friendly stores that provide instant reward confirmation</p>
-                            <div class="verification-badge trusted">Instant ✨</div>
-                        </div>
-                        <div class="verification-card">
-                            <h4>Open Purchases</h4>
-                            <p>Community-verified purchases that require 5+ similar transactions for confirmation</p>
-                            <div class="verification-badge community">Community 👥</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Wallet Section -->
-        <section id="wallet" class="section">
-            <div class="section-content">
-                <h2>My Eco-Wallet</h2>
-                <div class="wallet-overview">
-                    <div class="wallet-card">
-                        <h3>Total Points</h3>
-                        <div class="wallet-points" id="wallet-total-points">0</div>
-                    </div>
-                    <div class="wallet-card">
-                        <h3>Pending Points</h3>
-                        <div class="wallet-points pending" id="wallet-pending-points">0</div>
-                    </div>
-                    <div class="wallet-card">
-                        <h3>Redeemed Points</h3>
-                        <div class="wallet-points redeemed" id="wallet-redeemed-points">0</div>
-                    </div>
+            <!-- Trusted Partner Form -->
+            <section id="trusted-partner-form" class="form-section">
+                <h3>Trusted Partner Purchase</h3>
+                <div class="form-group">
+                    <label for="partner-select">Select Partner Shop:</label>
+                    <select id="partner-select">
+                        <option value="">Choose a partner...</option>
+                        <option value="EcoMart">EcoMart - Organic Products</option>
+                        <option value="GreenStore">GreenStore - Bamboo Items</option>
+                        <option value="NaturalLife">NaturalLife - Recycled Goods</option>
+                    </select>
                 </div>
-                
-                <div class="wallet-actions">
-                    <button class="wallet-btn">Redeem Points</button>
-                    <button class="wallet-btn secondary">View History</button>
+                <div class="form-group">
+                    <label for="partner-amount">Amount (₹):</label>
+                    <input type="number" id="partner-amount" min="1" placeholder="Enter amount">
                 </div>
-                
-                <div class="recent-transactions">
-                    <h3>Recent Transactions</h3>
-                    <div id="wallet-transactions" class="wallet-transactions-list">
-                        <p>No transactions yet</p>
-                    </div>
+                <div class="form-group">
+                    <label for="partner-image">Product Photo (Optional):</label>
+                    <input type="file" id="partner-image" accept="image/*">
                 </div>
-            </div>
-        </section>
+                <button id="partner-pay-btn" class="pay-btn">Pay with UPI</button>
+            </section>
 
-        <!-- Admin Section -->
-        <section id="admin" class="section">
-            <div class="section-content">
-                <h2>Admin Dashboard</h2>
-                <div class="admin-stats">
-                    <div class="stat-card">
-                        <h3>Total Users</h3>
-                        <div class="stat-number" id="admin-total-users">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Pending Verifications</h3>
-                        <div class="stat-number" id="admin-pending-verifications">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Total Transactions</h3>
-                        <div class="stat-number" id="admin-total-transactions">0</div>
-                    </div>
+            <!-- Open Purchase Form -->
+            <section id="open-purchase-form" class="form-section hidden">
+                <h3>Open Purchase Verification</h3>
+                <div class="form-group">
+                    <label for="bill-image">Upload Bill or Product Photo:</label>
+                    <input type="file" id="bill-image" accept="image/*" required>
                 </div>
+                <button id="analyze-btn" class="analyze-btn">Analyze for Eco-Friendliness</button>
                 
-                <div class="admin-section">
-                    <h3>Pending Verifications</h3>
-                    <div id="admin-verification-list" class="admin-verification-list">
-                        <p>No pending verifications</p>
+                <div id="analysis-result" class="analysis-result hidden">
+                    <h4>Analysis Result:</h4>
+                    <div id="eco-score"></div>
+                    <div id="detected-text"></div>
+                    
+                    <div class="form-group">
+                        <label for="open-amount">Amount (₹):</label>
+                        <input type="number" id="open-amount" min="1" placeholder="Enter amount">
                     </div>
+                    <button id="open-pay-btn" class="pay-btn">Pay with UPI (Pending Verification)</button>
                 </div>
-                
-                <div class="admin-section">
-                    <h3>All Transactions</h3>
-                    <div id="admin-transactions-list" class="admin-transactions-list">
-                        <p>No transactions yet</p>
-                    </div>
+            </section>
+
+            <!-- Transaction History -->
+            <section class="transaction-history">
+                <h3>Your Transactions</h3>
+                <div id="transactions-list" class="transactions-list">
+                    <p>No transactions yet</p>
                 </div>
-            </div>
-        </section>
+            </section>
+
+            <!-- Crowd Verification Status -->
+            <section class="verification-status">
+                <h3>Verification Status</h3>
+                <div id="verification-list" class="verification-list">
+                    <p>No pending verifications</p>
+                </div>
+            </section>
+        </main>
     </div>
 
     <!-- Authentication Modals -->
@@ -364,6 +191,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/home.js"></script>
 </body>
 </html>

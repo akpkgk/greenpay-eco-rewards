@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wallet - GreenPay</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/wallet.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">🌱 GreenPay</div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="partners.html" class="nav-link">Partners</a>
+                <a href="how-it-works.html" class="nav-link">How it Works</a>
+                <a href="wallet.html" class="nav-link">My Wallet</a>
+                <div id="auth-buttons">
+                    <button id="login-btn" class="auth-btn">Login</button>
+                    <button id="signup-btn" class="auth-btn">Sign Up</button>
+                </div>
+                <div id="user-menu" class="user-menu hidden">
+                    <span id="user-name">User</span>
+                    <button id="logout-btn" class="logout-btn">Logout</button>
+                </div>
+            </div>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="login-required" class="section-content">
+            <h2>Login Required</h2>
+            <p>Please login to view your wallet</p>
+            <button id="wallet-login-btn" class="cta-btn">Login</button>
+        </div>
+
+        <div id="wallet-content" class="section-content hidden">
+            <h2>My Eco-Wallet</h2>
+            <div class="wallet-overview">
+                <div class="wallet-card">
+                    <h3>Total Points</h3>
+                    <div class="wallet-points" id="wallet-total-points">0</div>
+                </div>
+                <div class="wallet-card">
+                    <h3>Pending Points</h3>
+                    <div class="wallet-points pending" id="wallet-pending-points">0</div>
+                </div>
+                <div class="wallet-card">
+                    <h3>Redeemed Points</h3>
+                    <div class="wallet-points redeemed" id="wallet-redeemed-points">0</div>
+                </div>
+            </div>
+            
+            <div class="wallet-actions">
+                <button class="wallet-btn">Redeem Points</button>
+                <button class="wallet-btn secondary">View History</button>
+            </div>
+            
+            <div class="recent-transactions">
+                <h3>Recent Transactions</h3>
+                <div id="wallet-transactions" class="wallet-transactions-list">
+                    <p>No transactions yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/wallet.js"></script>
+</body>
+</html>
