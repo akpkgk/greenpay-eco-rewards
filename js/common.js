@@ -1,4 +1,3 @@
-
 // Common functionality across all pages
 let currentUser = null;
 let allUsers = {};
@@ -19,13 +18,13 @@ function setupCommonEventListeners() {
 
     if (loginBtn) {
         loginBtn.addEventListener('click', function() {
-            window.location.href = 'index.html#login';
+            window.location.href = 'login.html';
         });
     }
 
     if (signupBtn) {
         signupBtn.addEventListener('click', function() {
-            window.location.href = 'index.html#signup';
+            window.location.href = 'signup.html';
         });
     }
 

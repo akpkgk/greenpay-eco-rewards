@@ -1,4 +1,3 @@
-
 // Home page specific functionality
 let transactions = [];
 let verificationData = {};
@@ -6,183 +5,84 @@ let pendingPayment = null;
 let lastAnalysisScore = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.hash === '#login' || window.location.hash === '#signup') {
-        setupAuthModals();
-    }
-    
     setupHomeEventListeners();
-    loadUserTransactions();
-    updateHomeUI();
-    
-    // Check if user is logged in to show main app
-    if (window.GreenPayCommon.currentUser()) {
-        document.getElementById('main-app').classList.remove('hidden');
-        displayTransactions();
-        displayVerifications();
-    }
+    updateUI();
 });
-
-function setupAuthModals() {
-    // Show login modal
-    if (window.location.hash === '#login') {
-        showModal('login-modal');
-    }
-    
-    // Show signup modal
-    if (window.location.hash === '#signup') {
-        showModal('signup-modal');
-    }
-}
 
 function setupHomeEventListeners() {
     // Get Started button
     const getStartedBtn = document.getElementById('get-started-btn');
     if (getStartedBtn) {
         getStartedBtn.addEventListener('click', function() {
-            if (window.GreenPayCommon.currentUser()) {
+            const currentUser = window.GreenPayCommon.currentUser();
+            if (currentUser) {
                 document.getElementById('main-app').classList.remove('hidden');
             } else {
-                showModal('signup-modal');
+                window.location.href = 'signup.html';
             }
         });
     }
-
-    // Auth forms
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-    
-    if (loginForm) loginForm.addEventListener('submit', handleLogin);
-    if (signupForm) signupForm.addEventListener('submit', handleSignup);
-
-    // Auth switching
-    const switchToSignup = document.getElementById('switch-to-signup');
-    const switchToLogin = document.getElementById('switch-to-login');
-    
-    if (switchToSignup) {
-        switchToSignup.addEventListener('click', function(e) {
-            e.preventDefault();
-            hideModal('login-modal');
-            showModal('signup-modal');
-        });
-    }
-    
-    if (switchToLogin) {
-        switchToLogin.addEventListener('click', function(e) {
-            e.preventDefault();
-            hideModal('signup-modal');
-            showModal('login-modal');
-        });
-    }
-
-    // Modal close buttons
-    document.querySelectorAll('.modal-close').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            const modal = btn.closest('.modal');
-            hideModal(modal.id);
-        });
-    });
 
     // Purchase type switching
     const trustedPartnerBtn = document.getElementById('trusted-partner-btn');
     const openPurchaseBtn = document.getElementById('open-purchase-btn');
     
-    if (trustedPartnerBtn) trustedPartnerBtn.addEventListener('click', () => switchPurchaseType('trusted'));
-    if (openPurchaseBtn) openPurchaseBtn.addEventListener('click', () => switchPurchaseType('open'));
+    if (trustedPartnerBtn) {
+        trustedPartnerBtn.addEventListener('click', function() {
+            switchPurchaseType('trusted');
+        });
+    }
 
-    // Purchase forms
+    if (openPurchaseBtn) {
+        openPurchaseBtn.addEventListener('click', function() {
+            switchPurchaseType('open');
+        });
+    }
+
+    // Payment buttons
     const partnerPayBtn = document.getElementById('partner-pay-btn');
     const analyzeBtn = document.getElementById('analyze-btn');
     const openPayBtn = document.getElementById('open-pay-btn');
-    
-    if (partnerPayBtn) partnerPayBtn.addEventListener('click', processTrustedPartnerPayment);
-    if (analyzeBtn) analyzeBtn.addEventListener('click', analyzeImage);
-    if (openPayBtn) openPayBtn.addEventListener('click', processOpenPurchasePayment);
 
-    // Payment modal
+    if (partnerPayBtn) {
+        partnerPayBtn.addEventListener('click', processTrustedPartnerPayment);
+    }
+
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', analyzeImage);
+    }
+
+    if (openPayBtn) {
+        openPayBtn.addEventListener('click', processOpenPurchasePayment);
+    }
+
+    // Payment modal buttons
     const paymentSuccessBtn = document.getElementById('payment-success-btn');
     const paymentCancelBtn = document.getElementById('payment-cancel-btn');
-    
-    if (paymentSuccessBtn) paymentSuccessBtn.addEventListener('click', simulatePaymentSuccess);
-    if (paymentCancelBtn) paymentCancelBtn.addEventListener('click', closePaymentModal);
-}
 
-function showModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) modal.classList.remove('hidden');
-}
-
-function hideModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) modal.classList.add('hidden');
-    
-    // Clear hash when closing auth modals
-    if (modalId === 'login-modal' || modalId === 'signup-modal') {
-        history.replaceState(null, null, window.location.pathname);
+    if (paymentSuccessBtn) {
+        paymentSuccessBtn.addEventListener('click', simulatePaymentSuccess);
     }
-}
 
-function handleLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    const user = window.GreenPayCommon.findUserByEmail(email);
-    if (user && user.password === password) {
-        window.GreenPayCommon.setCurrentUser(user);
-        localStorage.setItem('greenpay_current_user', user.id);
-        hideModal('login-modal');
-        window.GreenPayCommon.showMessage('Welcome back, ' + user.name + '!', 'success');
-        loadUserTransactions();
-        updateHomeUI();
+    if (paymentCancelBtn) {
+        paymentCancelBtn.addEventListener('click', closePaymentModal);
+    }
+
+    // Load user data if logged in
+    const currentUser = window.GreenPayCommon.currentUser();
+    if (currentUser) {
         document.getElementById('main-app').classList.remove('hidden');
+        loadUserTransactions();
         displayTransactions();
         displayVerifications();
-    } else {
-        window.GreenPayCommon.showMessage('Invalid email or password', 'error');
     }
-}
-
-function handleSignup(e) {
-    e.preventDefault();
-    const name = document.getElementById('signup-name').value;
-    const email = document.getElementById('signup-email').value;
-    const phone = document.getElementById('signup-phone').value;
-    const password = document.getElementById('signup-password').value;
-    
-    if (window.GreenPayCommon.findUserByEmail(email)) {
-        window.GreenPayCommon.showMessage('User with this email already exists', 'error');
-        return;
-    }
-    
-    const userId = 'user_' + Date.now();
-    const newUser = {
-        id: userId,
-        name: name,
-        email: email,
-        phone: phone,
-        password: password,
-        points: 0,
-        pendingPoints: 0,
-        redeemedPoints: 0,
-        isAdmin: email === 'admin@greenpay.com'
-    };
-    
-    const users = window.GreenPayCommon.allUsers();
-    users[userId] = newUser;
-    localStorage.setItem('greenpay_all_users', JSON.stringify(users));
-    localStorage.setItem('greenpay_current_user', userId);
-    
-    window.GreenPayCommon.setCurrentUser(newUser);
-    hideModal('signup-modal');
-    window.GreenPayCommon.showMessage('Welcome to GreenPay, ' + name + '!', 'success');
-    document.getElementById('main-app').classList.remove('hidden');
 }
 
 function switchPurchaseType(type) {
-    const trustedBtn = document.getElementById('trusted-partner-btn');
-    const openBtn = document.getElementById('open-purchase-btn');
-    const trustedForm = document.getElementById('trusted-partner-form');
-    const openForm = document.getElementById('open-purchase-form');
+    var trustedBtn = document.getElementById('trusted-partner-btn');
+    var openBtn = document.getElementById('open-purchase-btn');
+    var trustedForm = document.getElementById('trusted-partner-form');
+    var openForm = document.getElementById('open-purchase-form');
 
     if (type === 'trusted') {
         trustedBtn.classList.add('active');
@@ -201,12 +101,12 @@ function processTrustedPartnerPayment() {
     const currentUser = window.GreenPayCommon.currentUser();
     if (!currentUser) {
         window.GreenPayCommon.showMessage('Please login to make a purchase', 'error');
-        showModal('login-modal');
+        window.location.href = 'login.html';
         return;
     }
 
-    const partner = document.getElementById('partner-select').value;
-    const amount = document.getElementById('partner-amount').value;
+    var partner = document.getElementById('partner-select').value;
+    var amount = document.getElementById('partner-amount').value;
 
     if (!partner || !amount) {
         window.GreenPayCommon.showMessage('Please select a partner and enter amount', 'error');
@@ -220,38 +120,40 @@ function processOpenPurchasePayment() {
     const currentUser = window.GreenPayCommon.currentUser();
     if (!currentUser) {
         window.GreenPayCommon.showMessage('Please login to make a purchase', 'error');
-        showModal('login-modal');
+        window.location.href = 'login.html';
         return;
     }
 
-    const amount = document.getElementById('open-amount').value;
-    const analysisResult = document.getElementById('analysis-result');
+    var amount = document.getElementById('open-amount').value;
+    var analysisResult = document.getElementById('analysis-result');
 
     if (!amount || analysisResult.classList.contains('hidden')) {
         window.GreenPayCommon.showMessage('Please analyze image and enter amount', 'error');
         return;
     }
 
-    showPaymentModal(amount, 'open', { ecoScore: lastAnalysisScore });
+    var ecoScore = lastAnalysisScore || 0;
+    showPaymentModal(amount, 'open', { ecoScore: ecoScore });
 }
 
 function analyzeImage() {
-    const fileInput = document.getElementById('bill-image');
-    const file = fileInput.files[0];
+    var fileInput = document.getElementById('bill-image');
+    var file = fileInput.files[0];
 
     if (!file) {
         window.GreenPayCommon.showMessage('Please select an image', 'error');
         return;
     }
 
-    const analyzeBtn = document.getElementById('analyze-btn');
-    const resultDiv = document.getElementById('analysis-result');
+    var analyzeBtn = document.getElementById('analyze-btn');
+    var resultDiv = document.getElementById('analysis-result');
     
     analyzeBtn.textContent = 'Analyzing...';
     analyzeBtn.disabled = true;
 
+    // Simulate OCR analysis
     setTimeout(function() {
-        const mockAnalysis = simulateOCRAnalysis(file.name);
+        var mockAnalysis = simulateOCRAnalysis(file.name);
         displayAnalysisResult(mockAnalysis);
         
         analyzeBtn.textContent = 'Analyze for Eco-Friendliness';
@@ -261,8 +163,9 @@ function analyzeImage() {
 }
 
 function simulateOCRAnalysis(filename) {
-    const ecoKeywords = ['eco', 'organic', 'bamboo', 'recycled', 'bio', 'natural', 'sustainable', 'green'];
-    const mockTexts = [
+    // Mock OCR results based on filename or random generation
+    var ecoKeywords = ['eco', 'organic', 'bamboo', 'recycled', 'bio', 'natural', 'sustainable', 'green'];
+    var mockTexts = [
         'Organic Cotton T-Shirt Made from 100% Organic Cotton Eco-Friendly Material',
         'Bamboo Toothbrush Natural Biodegradable Sustainable Living',
         'Recycled Paper Notebook Made from 80% Recycled Materials',
@@ -271,11 +174,11 @@ function simulateOCRAnalysis(filename) {
         'Conventional Detergent Powder Regular Formula'
     ];
 
-    const randomText = mockTexts[Math.floor(Math.random() * mockTexts.length)];
-    const wordsInText = randomText.toLowerCase().split(' ');
+    var randomText = mockTexts[Math.floor(Math.random() * mockTexts.length)];
+    var wordsInText = randomText.toLowerCase().split(' ');
     
-    let ecoScore = 0;
-    const foundKeywords = [];
+    var ecoScore = 0;
+    var foundKeywords = [];
 
     ecoKeywords.forEach(function(keyword) {
         wordsInText.forEach(function(word) {
@@ -307,8 +210,8 @@ function getEcoRecommendation(score) {
 }
 
 function displayAnalysisResult(analysis) {
-    const ecoScoreDiv = document.getElementById('eco-score');
-    const detectedTextDiv = document.getElementById('detected-text');
+    var ecoScoreDiv = document.getElementById('eco-score');
+    var detectedTextDiv = document.getElementById('detected-text');
 
     ecoScoreDiv.innerHTML = 
         '<div class="eco-score ' + analysis.recommendation.level + '">' +
@@ -323,12 +226,13 @@ function displayAnalysisResult(analysis) {
 }
 
 function showPaymentModal(amount, type, data) {
-    const modal = document.getElementById('payment-modal');
-    const amountSpan = document.getElementById('payment-amount');
+    var modal = document.getElementById('payment-modal');
+    var amountSpan = document.getElementById('payment-amount');
     
     amountSpan.textContent = amount;
     modal.classList.remove('hidden');
     
+    // Store payment data for processing
     pendingPayment = { amount: parseFloat(amount), type: type, data: data };
 }
 
@@ -338,17 +242,15 @@ function closePaymentModal() {
 }
 
 function simulatePaymentSuccess() {
-    if (!pendingPayment) return;
-    
     const currentUser = window.GreenPayCommon.currentUser();
-    if (!currentUser) return;
+    if (!pendingPayment || !currentUser) return;
 
-    const amount = pendingPayment.amount;
-    const type = pendingPayment.type;
-    const data = pendingPayment.data;
-    const transactionId = generateTransactionId();
+    var amount = pendingPayment.amount;
+    var type = pendingPayment.type;
+    var data = pendingPayment.data;
+    var transactionId = generateTransactionId();
 
-    const transaction = {
+    var transaction = {
         id: transactionId,
         userId: currentUser.id,
         amount: amount,
@@ -358,7 +260,8 @@ function simulatePaymentSuccess() {
     };
 
     if (type === 'trusted') {
-        const points = Math.floor(amount * 0.1);
+        // Instant rewards for trusted partners
+        var points = Math.floor(amount * 0.1); // 10% of amount as points
         currentUser.points += points;
         
         transaction.partner = data.partner;
@@ -367,8 +270,10 @@ function simulatePaymentSuccess() {
         transaction.description = 'Purchase from ' + data.partner;
 
         window.GreenPayCommon.showMessage('Payment successful! Earned ' + points + ' eco-points instantly!', 'success');
+
     } else if (type === 'open') {
-        const potentialPoints = Math.floor(amount * 0.05 * (data.ecoScore + 1));
+        // Pending verification for open purchases
+        var potentialPoints = Math.floor(amount * 0.05 * (data.ecoScore + 1)); // Variable points based on eco-score
         
         transaction.ecoScore = data.ecoScore;
         transaction.points = potentialPoints;
@@ -376,16 +281,82 @@ function simulatePaymentSuccess() {
 
         currentUser.pendingPoints += potentialPoints;
         
+        // Add to verification tracking
+        addToVerificationPool(transaction);
+        
         window.GreenPayCommon.showMessage('Payment successful! ' + potentialPoints + ' points pending verification', 'success');
     }
 
     transactions.push(transaction);
-    saveTransactionData();
-    updateHomeUI();
+    saveAllData();
+    updateUI();
     displayTransactions();
     displayVerifications();
     closePaymentModal();
     resetForms();
+}
+
+function addToVerificationPool(transaction) {
+    var verificationKey = transaction.ecoScore + '_' + Math.floor(transaction.amount/100); // Group by eco-score and amount range
+    
+    if (!verificationData[verificationKey]) {
+        verificationData[verificationKey] = {
+            transactions: [],
+            requiredCount: 5,
+            description: 'Eco-score: ' + transaction.ecoScore + ', Amount range: ₹' + Math.floor(transaction.amount/100)*100 + '-' + (Math.floor(transaction.amount/100)*100+99)
+        };
+    }
+    
+    verificationData[verificationKey].transactions.push(transaction.id);
+    
+    // Check if verification threshold is met
+    if (verificationData[verificationKey].transactions.length >= verificationData[verificationKey].requiredCount) {
+        processVerification(verificationKey);
+    }
+}
+
+function processVerification(verificationKey) {
+    var verificationGroup = verificationData[verificationKey];
+    var transactionIds = verificationGroup.transactions;
+    
+    // Get all transactions from all users
+    var allTransactions = JSON.parse(localStorage.getItem('greenpay_all_transactions') || '[]');
+    const allUsers = window.GreenPayCommon.allUsers();
+    
+    // Update all transactions in this group to verified
+    transactionIds.forEach(function(txId) {
+        var transaction = allTransactions.find(function(tx) { return tx.id === txId; });
+        if (transaction && transaction.status === 'pending') {
+            transaction.status = 'verified';
+            
+            // Update user points
+            var user = allUsers[transaction.userId];
+            if (user) {
+                user.points += transaction.points;
+                user.pendingPoints -= transaction.points;
+            }
+        }
+    });
+    
+    // Update local transactions if current user is affected
+    transactionIds.forEach(function(txId) {
+        var transaction = transactions.find(function(tx) { return tx.id === txId; });
+        if (transaction && transaction.status === 'pending') {
+            transaction.status = 'verified';
+        }
+    });
+    
+    // Mark verification group as completed
+    verificationData[verificationKey].completed = true;
+    verificationData[verificationKey].completedAt = new Date().toISOString();
+    
+    // Save all transactions back
+    localStorage.setItem('greenpay_all_transactions', JSON.stringify(allTransactions));
+    localStorage.setItem('greenpay_all_users', JSON.stringify(allUsers));
+    
+    var firstTransaction = allTransactions.find(function(tx) { return tx.id === transactionIds[0]; });
+    var totalPoints = transactionIds.length * firstTransaction.points;
+    window.GreenPayCommon.showMessage('🎉 Verification completed! Earned ' + totalPoints + ' total points!', 'success');
 }
 
 function generateTransactionId() {
@@ -393,18 +364,18 @@ function generateTransactionId() {
 }
 
 function displayTransactions() {
-    const transactionsList = document.getElementById('transactions-list');
+    var transactionsList = document.getElementById('transactions-list');
     
     if (transactions.length === 0) {
         transactionsList.innerHTML = '<p>No transactions yet</p>';
         return;
     }
 
-    const sortedTransactions = transactions.sort(function(a, b) {
+    var sortedTransactions = transactions.sort(function(a, b) {
         return new Date(b.timestamp) - new Date(a.timestamp);
     });
 
-    let transactionsHTML = '';
+    var transactionsHTML = '';
     sortedTransactions.forEach(function(tx) {
         transactionsHTML += 
             '<div class="transaction-item ' + tx.status + '">' +
@@ -423,59 +394,95 @@ function displayTransactions() {
 }
 
 function displayVerifications() {
-    const verificationsList = document.getElementById('verification-list');
-    // Simplified verification display for now
-    verificationsList.innerHTML = '<p>No pending verifications</p>';
+    var verificationsList = document.getElementById('verification-list');
+    var pendingVerifications = [];
+    
+    Object.keys(verificationData).forEach(function(key) {
+        if (!verificationData[key].completed) {
+            pendingVerifications.push({
+                key: key,
+                transactions: verificationData[key].transactions,
+                requiredCount: verificationData[key].requiredCount,
+                description: verificationData[key].description
+            });
+        }
+    });
+
+    if (pendingVerifications.length === 0) {
+        verificationsList.innerHTML = '<p>No pending verifications</p>';
+        return;
+    }
+
+    var verificationsHTML = '';
+    pendingVerifications.forEach(function(verification) {
+        var progress = (verification.transactions.length / verification.requiredCount) * 100;
+        verificationsHTML += 
+            '<div class="verification-item">' +
+                '<div style="margin-bottom: 10px;">' +
+                    '<strong>' + verification.description + '</strong>' +
+                '</div>' +
+                '<div style="font-size: 0.9em; color: #666;">' +
+                    'Progress: ' + verification.transactions.length + '/' + verification.requiredCount + ' submissions' +
+                    '<div style="background: #f0f0f0; height: 8px; border-radius: 4px; margin-top: 5px;">' +
+                        '<div style="background: #4CAF50; height: 100%; width: ' + progress + '%; border-radius: 4px;"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+    });
+
+    verificationsList.innerHTML = verificationsHTML;
+}
+
+function resetForms() {
+    // Reset trusted partner form
+    document.getElementById('partner-select').value = '';
+    document.getElementById('partner-amount').value = '';
+    document.getElementById('partner-image').value = '';
+    
+    // Reset open purchase form
+    document.getElementById('bill-image').value = '';
+    document.getElementById('open-amount').value = '';
+    document.getElementById('analysis-result').classList.add('hidden');
+}
+
+function updateUI() {
+    const currentUser = window.GreenPayCommon.currentUser();
+    document.getElementById('user-points').textContent = currentUser ? currentUser.points : 0;
 }
 
 function loadUserTransactions() {
     const currentUser = window.GreenPayCommon.currentUser();
     if (!currentUser) return;
     
-    const allTransactions = JSON.parse(localStorage.getItem('greenpay_all_transactions') || '[]');
+    var allTransactions = JSON.parse(localStorage.getItem('greenpay_all_transactions') || '[]');
     transactions = allTransactions.filter(function(tx) {
         return tx.userId === currentUser.id;
     });
 }
 
-function saveTransactionData() {
+function saveAllData() {
     const currentUser = window.GreenPayCommon.currentUser();
-    if (!currentUser) return;
+    const allUsers = window.GreenPayCommon.allUsers();
     
-    // Update user data
-    const users = window.GreenPayCommon.allUsers();
-    users[currentUser.id] = currentUser;
-    localStorage.setItem('greenpay_all_users', JSON.stringify(users));
+    localStorage.setItem('greenpay_all_users', JSON.stringify(allUsers));
+    localStorage.setItem('greenpay_verifications', JSON.stringify(verificationData));
     
-    // Save transactions
-    let allTransactions = JSON.parse(localStorage.getItem('greenpay_all_transactions') || '[]');
+    // Save all transactions
+    var allTransactions = JSON.parse(localStorage.getItem('greenpay_all_transactions') || '[]');
+    
+    // Remove existing transactions for current user
     allTransactions = allTransactions.filter(function(tx) {
-        return tx.userId !== currentUser.id;
+        return !currentUser || tx.userId !== currentUser.id;
     });
-    allTransactions = allTransactions.concat(transactions);
-    localStorage.setItem('greenpay_all_transactions', JSON.stringify(allTransactions));
-}
-
-function resetForms() {
-    const partnerSelect = document.getElementById('partner-select');
-    const partnerAmount = document.getElementById('partner-amount');
-    const partnerImage = document.getElementById('partner-image');
-    const billImage = document.getElementById('bill-image');
-    const openAmount = document.getElementById('open-amount');
-    const analysisResult = document.getElementById('analysis-result');
     
-    if (partnerSelect) partnerSelect.value = '';
-    if (partnerAmount) partnerAmount.value = '';
-    if (partnerImage) partnerImage.value = '';
-    if (billImage) billImage.value = '';
-    if (openAmount) openAmount.value = '';
-    if (analysisResult) analysisResult.classList.add('hidden');
-}
-
-function updateHomeUI() {
-    const currentUser = window.GreenPayCommon.currentUser();
-    const userPointsElement = document.getElementById('user-points');
-    if (userPointsElement) {
-        userPointsElement.textContent = currentUser ? currentUser.points : 0;
+    // Add current user's transactions
+    if (currentUser) {
+        transactions.forEach(function(tx) {
+            if (!allTransactions.find(function(existing) { return existing.id === tx.id; })) {
+                allTransactions.push(tx);
+            }
+        });
     }
+    
+    localStorage.setItem('greenpay_all_transactions', JSON.stringify(allTransactions));
 }
